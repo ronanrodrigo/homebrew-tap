@@ -1,0 +1,54 @@
+class FinderSidebarIcons < Formula
+  desc "Custom icons for Finder sidebar items via Finder Sync helper apps"
+  homepage "https://github.com/ronanrodrigo/finder-sidebar-icons"
+  url "https://github.com/ronanrodrigo/finder-sidebar-icons/archive/refs/tags/v0.1.0.tar.gz"
+  sha256 "504aa71a208dabca7352908a37261f544cc0e06956b9bb2abed6dc8fdcd50643"
+  license "MIT"
+  head "https://github.com/ronanrodrigo/finder-sidebar-icons.git", branch: "main"
+
+  # The tool compiles (swiftc) and codesigns a Finder Sync helper app per folder.
+  depends_on xcode: ["13.0", :clt_only]
+  depends_on macos: :ventura
+
+  def install
+    # Layout the scripts expect: <libexec>/finder-sidebar-icons/{scripts,examples,assets},
+    # because build_manager.sh and install_examples.sh resolve ROOT as "<scripts dir>/.."
+    # and then look for assets/AppIcon.icns and examples/*.json there.
+    root = libexec/"finder-sidebar-icons"
+    root.install "scripts"
+    root.install "examples"
+    # Only the bits the scripts actually consume; the repo's assets/ also carries
+    # README screenshots, which have no business in libexec.
+    (root/"assets").install "assets/AppIcon.icns", "assets/example-config.json"
+
+    chmod 0755, root/"scripts/build_icon_app.sh"
+    chmod 0755, root/"scripts/build_manager.sh"
+    chmod 0755, root/"scripts/install_examples.sh"
+
+    # The wrapper finds the scripts through its own (symlink-resolved) location:
+    # bin/../libexec/finder-sidebar-icons/scripts.
+    bin.install "bin/sidebar-icon"
+  end
+
+  test do
+    assert_match "Usage:", shell_output("#{bin}/sidebar-icon help")
+    assert_match "add --name", shell_output("#{bin}/sidebar-icon help")
+  end
+
+  def caveats
+    <<~EOS
+      sidebar-icon builds each helper app on this Mac: it needs an
+      "Apple Development" code-signing identity (Xcode > Settings > Accounts), because an
+      ad-hoc signed extension is often not picked up by pkd.
+
+      The helper apps land in ~/Applications/FinderSidebarIcons/ and register a Finder Sync
+      extension each; the sidebar draws the icon of the app that owns the folder.
+
+      First command:
+
+        sidebar-icon add --name Projects --target ~/Projects --symbol hammer
+
+      Other commands: sidebar-icon help, examples, manager, status, favorites, remove, uninstall.
+    EOS
+  end
+end
