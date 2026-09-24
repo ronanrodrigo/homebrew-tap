@@ -11,6 +11,26 @@ brew tap ronanrodrigo/tap
 O comando acima não é necessário quando se instala um cask diretamente pelo nome completo,
 porque o Homebrew faz o tap automaticamente.
 
+## Ficoni
+
+Ícone próprio em qualquer item da sidebar do Finder do macOS: um app auxiliar (Finder Sync)
+por pasta, criado pelo CLI `sidebar-icon`.
+
+```bash
+brew install ronanrodrigo/tap/ficoni
+```
+
+A fórmula instala só o CLI e os scripts — cada app auxiliar é compilado (`swiftc`) e assinado
+nesta máquina quando você roda o `sidebar-icon`, por isso ela exige as Xcode command line
+tools e uma identidade "Apple Development". Os apps auxiliares ficam em `~/Applications/Ficoni/`.
+
+Atualizar / desinstalar:
+
+```bash
+brew upgrade ficoni
+brew uninstall ficoni
+```
+
 ## OpenRouter Meter
 
 App de barra de menus do macOS que exibe o saldo e o consumo da conta do OpenRouter.

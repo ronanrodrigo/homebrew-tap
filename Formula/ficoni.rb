@@ -1,20 +1,20 @@
-class FinderSidebarIcons < Formula
+class Ficoni < Formula
   desc "Custom icons for Finder sidebar items via Finder Sync helper apps"
-  homepage "https://github.com/ronanrodrigo/finder-sidebar-icons"
-  url "https://github.com/ronanrodrigo/finder-sidebar-icons/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "504aa71a208dabca7352908a37261f544cc0e06956b9bb2abed6dc8fdcd50643"
+  homepage "https://github.com/ronanrodrigo/ficoni"
+  url "https://github.com/ronanrodrigo/ficoni/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "1f01d063f3e7818701fe17a5fc8dbeeac8d40c4d4f1c366461002c23b5ffc779"
   license "MIT"
-  head "https://github.com/ronanrodrigo/finder-sidebar-icons.git", branch: "main"
+  head "https://github.com/ronanrodrigo/ficoni.git", branch: "main"
 
   # The tool compiles (swiftc) and codesigns a Finder Sync helper app per folder.
   depends_on xcode: ["13.0", :clt_only]
   depends_on macos: :ventura
 
   def install
-    # Layout the scripts expect: <libexec>/finder-sidebar-icons/{scripts,examples,assets},
+    # Layout the scripts expect: <libexec>/ficoni/{scripts,examples,assets},
     # because build_manager.sh and install_examples.sh resolve ROOT as "<scripts dir>/.."
     # and then look for assets/AppIcon.icns and examples/*.json there.
-    root = libexec/"finder-sidebar-icons"
+    root = libexec/"ficoni"
     root.install "scripts"
     root.install "examples"
     # Only the bits the scripts actually consume; the repo's assets/ also carries
@@ -26,7 +26,7 @@ class FinderSidebarIcons < Formula
     chmod 0755, root/"scripts/install_examples.sh"
 
     # The wrapper finds the scripts through its own (symlink-resolved) location:
-    # bin/../libexec/finder-sidebar-icons/scripts.
+    # bin/../libexec/ficoni/scripts.
     bin.install "bin/sidebar-icon"
   end
 
@@ -41,7 +41,7 @@ class FinderSidebarIcons < Formula
       "Apple Development" code-signing identity (Xcode > Settings > Accounts), because an
       ad-hoc signed extension is often not picked up by pkd.
 
-      The helper apps land in ~/Applications/FinderSidebarIcons/ and register a Finder Sync
+      The helper apps land in ~/Applications/Ficoni/ and register a Finder Sync
       extension each; the sidebar draws the icon of the app that owns the folder.
 
       First command:
